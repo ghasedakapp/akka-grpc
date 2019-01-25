@@ -4,11 +4,12 @@
 
 package akka.grpc.scaladsl
 
-import scala.concurrent.{ ExecutionException, Future }
-import io.grpc.Status
 import akka.grpc.GrpcServiceException
 import akka.grpc.internal.GrpcResponseHelpers
 import akka.http.scaladsl.model.HttpResponse
+import io.grpc.Status
+
+import scala.concurrent.{ ExecutionException, Future }
 
 object GrpcExceptionHandler {
   val default: PartialFunction[Throwable, Future[HttpResponse]] = {
@@ -26,7 +27,8 @@ object GrpcExceptionHandler {
     case _: UnsupportedOperationException ⇒
       Future.successful(GrpcResponseHelpers.status(Status.UNIMPLEMENTED))
     case other ⇒
-      Future.failed(other)
+      other.printStackTrace()
+      Future.successful(GrpcResponseHelpers.status(Status.INTERNAL))
   }
 }
 
